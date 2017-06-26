@@ -37,10 +37,6 @@ function changeUrl(anchor) {
     }
     hostname = splitHostname.join('.')
 
-    console.log("protocol", protocol);
-    console.log("hostname", hostname);
-    console.log("rest", rest);
-
     anchor.href = protocol + hostname + '/' + rest;
 }
 
