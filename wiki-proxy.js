@@ -1,10 +1,12 @@
 function changeUrl(anchor) {
-    var url = anchor.href
-    var newUrl;
-    var hostname;
-    var protocol = "";
-    var urlParts = url.split('/');
-    var queryString = url.split('?')[1] || ""
+    const url = anchor.href
+    const urlParts = url.split('/');
+    const queryString = url.split('?')[1] || ""
+
+    let newUrl = "";
+    let hostname = "";
+    let rest = "";
+    let protocol = "";
 
     // If anchor is not about wikipedia return
     if (url.indexOf("wikipedia") === -1) {
@@ -20,21 +22,26 @@ function changeUrl(anchor) {
     if (url.indexOf("://") > -1) {
       protocol = urlParts[0] + "//";
       hostname = urlParts[2];
+      rest = urlParts.slice(3).join('/');
     } else {
       hostname = urlParts[0];
+      rest = urlParts.slice(1).join('/');
     }
 
-    let prependPoint = hostname.lastIndexOf(".", hostname.lastIndexOf(".") - 1);
-    let resultUrl = hostname.substr(0, prependPoint+1) + "0" + hostname.substr(prependPoint+1, hostname.length);
-
-
-    if (queryString != "") {
-      newUrl = protocol + resultUrl + "?" + queryString;
-    } else {
-      newUrl = protocol + resultUrl;
+    let splitHostname = hostname.split(".")
+    let i;
+    for (i = 0; i < splitHostname.length; ++i) {
+      if (splitHostname[i] === "wikipedia") {
+        splitHostname[i] = "0wikipedia"
+      }
     }
+    hostname = splitHostname.join('.')
 
-    anchor.href = newUrl;
+    console.log("protocol", protocol);
+    console.log("hostname", hostname);
+    console.log("rest", rest);
+
+    anchor.href = protocol + hostname + '/' + rest;
 }
 
 document.querySelectorAll("a").forEach(changeUrl)
